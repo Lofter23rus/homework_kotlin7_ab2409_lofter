@@ -9,7 +9,6 @@ import java.time.LocalDateTime
 /**
  * Network result
  */
-// Response - возврат, добавляем OUT в атрибуты
 // Type parameter T is declared as 'out' but occurs in 'invariant' position in type NetworkResponse<T, Nothing>
 //   fix: родитель должен иметь такой же модификатор OUT как и дочка
 // Type mismatch: inferred type is Success<String> but NetworkResponse<String, kotlin.Error /* = java.lang.Error */> was expected
