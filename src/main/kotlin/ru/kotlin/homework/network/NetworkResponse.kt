@@ -9,19 +9,28 @@ import java.time.LocalDateTime
 /**
  * Network result
  */
-sealed class NetworkResponse<T, R> {
+// Response - возврат, добавляем OUT в атрибуты
+// Type parameter T is declared as 'out' but occurs in 'invariant' position in type NetworkResponse<T, Nothing>
+//   fix: родитель должен иметь такой же модификатор OUT как и дочка
+// Type mismatch: inferred type is Success<String> but NetworkResponse<String, kotlin.Error /* = java.lang.Error */> was expected
+//   fix: второй параметр так же "OUT" для обобщенного типа как ковариантного
+sealed class NetworkResponse<out T, out R> {
     val responseDateTime: LocalDateTime = LocalDateTime.now()
 }
 
 /**
  * Network success
  */
-data class Success<T, R>(val resp: T): NetworkResponse<T, R>()
+// Success - наследник без R, заменяем R на Nothing
+// Type mismatch: inferred type is Success<String> but NetworkResponse<Any, kotlin.Error /* = java.lang.Error */> was expected
+//   fix: Any - предок для String, используем "OUT" для обобщенного типа как ковариантного
+data class Success<out T>(val resp: T): NetworkResponse<T, Nothing>()
 
 /**
  * Network error
  */
-data class Failure<T, R>(val error: R): NetworkResponse<T, R>()
+// Failure - наследник без T, заменяем T на Nothing
+data class Failure<R>(val error: R): NetworkResponse<Nothing, R>()
 
 val s1 = Success("Message")
 val r11: NetworkResponse<String, Error> = s1
